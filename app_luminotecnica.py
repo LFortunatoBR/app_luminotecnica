@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import math
 
-st.set_page_config(page_title="Validador NBR - Arquitetura", layout="vertical")
+st.set_page_config(page_title="Validador NBR - Arquitetura", layout="centered")
 
 # ==========================================
 # 1. SISTEMA DE SEGURANÇA (LOGIN)
