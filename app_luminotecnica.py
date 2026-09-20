@@ -101,3 +101,8 @@ with st.expander("Dimensionar Fonte para Fita de LED"):
     
     st.warning(f"Consumo Total da Fita: **{potencia_fita_total:.1f}W**")
     st.success(f"Compre uma fonte de no mínimo: **{math.ceil(potencia_com_folga)}W** (já com 30% de margem de segurança).")
+    # Regra de Voltagem (12V vs 24V)
+    if metragem_fita <= 5.0:
+        st.info("💡 **Recomendação:** Fita e Fonte de 12V. (Ideal para marcenaria, nichos e trechos até 5m. Permite cortes menores).")
+    else:
+        st.info("💡 **Recomendação:** Fita e Fonte de 24V. (Evita a perda de brilho no fim do circuito em lances contínuos maiores que 5m).")
