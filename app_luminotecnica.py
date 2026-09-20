@@ -46,20 +46,110 @@ dados_ambientes = {
 
 ARQUIVO_DB = "luminarias_db.csv"
 
+# Se o arquivo não existir, cria com o catálogo completo
 if not os.path.exists(ARQUIVO_DB):
     dados_iniciais = pd.DataFrame({
         "Modelo": [
-            "Painel LED Embutir Quadrado", 
-            "Spot Dicróica MR16", 
-            "Pendente Linear (Escritório)", 
-            "Luminária High Bay (Pé-direito Duplo/4m)", 
-            "Spot IP65 (Área de Chuveiro/Molhada)",
-            "Perfil de LED Embutir 1m"
+            # Família: Painéis Quadrados (Plafons de Embutir)
+            "Painel LED Embutir Quadrado 12x12cm (Micro)",
+            "Painel LED Embutir Quadrado 17x17cm",
+            "Painel LED Embutir Quadrado 22x22cm (Padrão Antigo 20x20)",
+            "Painel LED Embutir Quadrado 30x30cm",
+            "Painel LED Embutir Quadrado 40x40cm",
+            "Painel LED Embutir Quadrado 60x60cm (Modular)",
+            # Família: Painéis Redondos (Downlights de Embutir)
+            "Painel LED Embutir Redondo Ø 12cm",
+            "Painel LED Embutir Redondo Ø 17cm",
+            "Painel LED Embutir Redondo Ø 22cm",
+            "Painel LED Embutir Redondo Ø 30cm",
+            # Família: Spots e Técnicos
+            "Spot Dicróica MR16 (Luz de Destaque)",
+            "Spot PAR20 (Pé-direito até 3m)",
+            "Spot LED IP65 (Área de Chuveiro/Vapor)",
+            "Balizador LED de Parede/Degrau (Escadas)",
+            # Família: Lineares e Altura Dupla
+            "Perfil de LED Embutir - Linear (por Metro)",
+            "Pendente Linear/Tubular (Pé-direito 4m)",
+            "Luminária High Bay Industrial (Pé-direito 6m+)"
         ],
-        "Potência (W)": [18.0, 5.0, 32.0, 100.0, 7.0, 14.4],
-        "Fluxo Luminoso (lm)": [1400.0, 400.0, 2400.0, 10000.0, 560.0, 1200.0],
-        "Eficiência (lm/W)": [77.7, 80.0, 75.0, 100.0, 80.0, 83.3]
+        "Potência (W)": [
+            6.0, 12.0, 18.0, 24.0, 36.0, 48.0,  # Quadrados
+            6.0, 12.0, 18.0, 24.0,              # Redondos
+            5.0, 7.0, 7.0, 2.0,                 # Spots/Balizador
+            14.4, 40.0, 100.0                   # Lineares/Altos
+        ],
+        "Fluxo Luminoso (lm)": [
+            420.0, 840.0, 1260.0, 1680.0, 2520.0, 3840.0, # Quadrados
+            420.0, 840.0, 1260.0, 1680.0,                 # Redondos
+            400.0, 525.0, 560.0, 100.0,                   # Spots/Balizador
+            1200.0, 3200.0, 10000.0                       # Lineares/Altos
+        ]
     })
+    
+    # Calcula a eficiência (lm/W) automaticamente e salva o arquivo
+    dados_iniciais["Eficiência (lm/W)"] = (dados_iniciais["Fluxo Luminoso (lm)"] / dados_iniciais["Potência (W)"]).round(1)
+    dados_iniciais.to_csv(ARQUIVO_DB, index=False)
+
+df_luminarias = pd.read_csv(ARQUIVO_DB)# ==========================================
+# 2. BANCO DE DADOS NBR E LUMINÁRIAS
+# ==========================================
+dados_ambientes = {
+    "Lavabo": {"m2_min": 2.5, "pe_direito_min": 2.2, "ugrl": 25, "ra": 80, "lux_ideal": 100},
+    "Banheiro Social": {"m2_min": 3.0, "pe_direito_min": 2.2, "ugrl": 25, "ra": 80, "lux_ideal": 100},
+    "Banheiro Suíte": {"m2_min": 4.0, "pe_direito_min": 2.2, "ugrl": 25, "ra": 80, "lux_ideal": 100},
+    "Quartos Solteiro": {"m2_min": 9.0, "pe_direito_min": 2.5, "ugrl": 22, "ra": 80, "lux_ideal": 100},
+    "Quartos Casal": {"m2_min": 12.0, "pe_direito_min": 2.5, "ugrl": 22, "ra": 80, "lux_ideal": 100},
+    "Salas": {"m2_min": 12.0, "pe_direito_min": 2.5, "ugrl": 22, "ra": 80, "lux_ideal": 100},
+    "Copa/Cozinha": {"m2_min": 6.0, "pe_direito_min": 2.5, "ugrl": 22, "ra": 80, "lux_ideal": 200},
+    "Áreas de Serviço": {"m2_min": 3.0, "pe_direito_min": 2.2, "ugrl": 22, "ra": 80, "lux_ideal": 100},
+    "Garagens": {"m2_min": 12.5, "pe_direito_min": 2.3, "ugrl": 28, "ra": 40, "lux_ideal": 75},
+    "Escritório / Home Office": {"m2_min": 6.0, "pe_direito_min": 2.5, "ugrl": 19, "ra": 80, "lux_ideal": 300}
+}
+
+ARQUIVO_DB = "luminarias_db.csv"
+
+# Se o arquivo não existir, cria com o catálogo completo
+if not os.path.exists(ARQUIVO_DB):
+    dados_iniciais = pd.DataFrame({
+        "Modelo": [
+            # Família: Painéis Quadrados (Plafons de Embutir)
+            "Painel LED Embutir Quadrado 12x12cm (Micro)",
+            "Painel LED Embutir Quadrado 17x17cm",
+            "Painel LED Embutir Quadrado 22x22cm (Padrão Antigo 20x20)",
+            "Painel LED Embutir Quadrado 30x30cm",
+            "Painel LED Embutir Quadrado 40x40cm",
+            "Painel LED Embutir Quadrado 60x60cm (Modular)",
+            # Família: Painéis Redondos (Downlights de Embutir)
+            "Painel LED Embutir Redondo Ø 12cm",
+            "Painel LED Embutir Redondo Ø 17cm",
+            "Painel LED Embutir Redondo Ø 22cm",
+            "Painel LED Embutir Redondo Ø 30cm",
+            # Família: Spots e Técnicos
+            "Spot Dicróica MR16 (Luz de Destaque)",
+            "Spot PAR20 (Pé-direito até 3m)",
+            "Spot LED IP65 (Área de Chuveiro/Vapor)",
+            "Balizador LED de Parede/Degrau (Escadas)",
+            # Família: Lineares e Altura Dupla
+            "Perfil de LED Embutir - Linear (por Metro)",
+            "Pendente Linear/Tubular (Pé-direito 4m)",
+            "Luminária High Bay Industrial (Pé-direito 6m+)"
+        ],
+        "Potência (W)": [
+            6.0, 12.0, 18.0, 24.0, 36.0, 48.0,  # Quadrados
+            6.0, 12.0, 18.0, 24.0,              # Redondos
+            5.0, 7.0, 7.0, 2.0,                 # Spots/Balizador
+            14.4, 40.0, 100.0                   # Lineares/Altos
+        ],
+        "Fluxo Luminoso (lm)": [
+            420.0, 840.0, 1260.0, 1680.0, 2520.0, 3840.0, # Quadrados
+            420.0, 840.0, 1260.0, 1680.0,                 # Redondos
+            400.0, 525.0, 560.0, 100.0,                   # Spots/Balizador
+            1200.0, 3200.0, 10000.0                       # Lineares/Altos
+        ]
+    })
+    
+    # Calcula a eficiência (lm/W) automaticamente e salva o arquivo
+    dados_iniciais["Eficiência (lm/W)"] = (dados_iniciais["Fluxo Luminoso (lm)"] / dados_iniciais["Potência (W)"]).round(1)
     dados_iniciais.to_csv(ARQUIVO_DB, index=False)
 
 df_luminarias = pd.read_csv(ARQUIVO_DB)
